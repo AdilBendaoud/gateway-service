@@ -1,0 +1,25 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: Gateway
+  cloud:
+    consul:
+      host: ${SPRING_CLOUD_CONSUL_HOST}
+      port: ${SPRING_CLOUD_CONSUL_PORT}
+      discovery:
+        prefer-ip-address: true
+        service-name: Gateway
+    discovery:
+      enabled: true
+    gateway:
+      routes:
+        - id: SERVICE-CLIENT
+          uri: lb://SERVICE-CLIENT
+          predicates:
+            - Path=/api/client/**
+        - id: SERVICE-CAR
+          uri: lb://SERVICE-CAR
+          predicates:
+            - Path=/api/car/**
