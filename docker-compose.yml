@@ -1,0 +1,29 @@
+version: '3.8'
+
+name: microservices
+services:
+  consul:
+    image: consul:1.15.4
+    ports:
+      - "8500:8500"
+    networks:
+      - app-network
+
+  gateway:
+    build:
+      context: ./
+    ports:
+      - "8888:8888"
+    depends_on:
+      consul:
+        condition: service_started
+    networks:
+      - app-network
+    environment:
+      - SPRING_CLOUD_CONSUL_HOST=consul
+      - SPRING_CLOUD_CONSUL_PORT=8500
+      - SPRING_CLOUD_CONSUL_DISCOVERY_ENABLED=true
+
+networks:
+  app-network:
+    driver: bridge
